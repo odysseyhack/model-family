@@ -26,7 +26,7 @@ def setup(server, branch):
     env.requirements = deployment_config.requirements
 
 
-def deploy(server='pi', branch=None):
+def deploy(server='pi1', branch=None):
     setup(server, branch)
     print('deploying %(branch)s to %(sitename)s' % env)
 
@@ -72,11 +72,10 @@ def deploy(server='pi', branch=None):
         cd %(projectdir)s
         . %(virtualenv)s/bin/activate
         python manage.py collectstatic --noinput
-        python manage.py compilemessages
         python manage.py migrate
         """ % env)
 
     # django restart
     run("""
-        touch %(projectdir)s/enrollment/wsgi.py
+        touch %(projectdir)s/generic/wsgi.py
         """ % env)
