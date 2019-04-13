@@ -8,7 +8,7 @@ from oauthlib.oauth1 import rfc5849
 from requests_oauthlib import OAuth1Session
 
 from enrollment.settings import env
-from .models import HNPOAuth
+from hackathon.models import HNPOAuth
 from hnp.client import CreateApiRequest, ApiRequestException
 
 

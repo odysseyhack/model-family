@@ -25,6 +25,7 @@ SECRET_KEY = '98fim!5fs6&coov+o1lk$!p9=x^92*0r*#rxgu7n=u5yr3(77j'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+'localhost',
 'pi1', 
 'pi2', 
 'hackathon1',
@@ -36,6 +37,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
     'hackathon',
     'django_extensions',
     'django.contrib.admin',
@@ -44,9 +46,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'oauth2_provider',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -55,6 +61,19 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    )
+}
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+AUTHENTICATION_BACKENDS = (
+    'oauth2_provider.backends.OAuth2Backend',
+    'django.contrib.auth.backends.ModelBackend'
+)
 
 ROOT_URLCONF = 'generic.urls'
 
@@ -130,6 +149,22 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 #    os.path.join(BASE_DIR, 'ajaxauth/static'),
 )
+
+
+ENABLE_USER_ACTIVATION = True
+DISABLE_USERNAME = False
+LOGIN_VIA_EMAIL = True
+LOGIN_VIA_EMAIL_OR_USERNAME = False
+LOGIN_REDIRECT_URL = 'index'
+LOGIN_URL = 'accounts:log_in'
+USE_REMEMBER_ME = True
+
+RESTORE_PASSWORD_VIA_EMAIL_OR_USERNAME = False
+ENABLE_ACTIVATION_AFTER_EMAIL_CHANGE = True
+
+SIGN_UP_FIELDS = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
+if DISABLE_USERNAME:
+    SIGN_UP_FIELDS = ['first_name', 'last_name', 'email', 'password1', 'password2']
 
 LOGGING = {
     'version': 1,
