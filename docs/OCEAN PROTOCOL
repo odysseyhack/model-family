@@ -1,0 +1,14 @@
+OCEAN PROTOCOL
+commons.oceanprotocol.com
+datascience.oceanprotocol.com
+
+
+VMWARE
+vmware sbft 
+clone git@github.com:vmware-samples/vmware-blockchain-samples.git
+docker pull mrharrison/supply-chain
+truffle connect
+https://github.com/pipermerriam/eth-testrpc
+ganache
+https://github.com/vmware-samples
+https://github.com/vmware-samples/vmware-blockchain-samples

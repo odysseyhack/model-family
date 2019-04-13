@@ -25,7 +25,13 @@ SECRET_KEY = '98fim!5fs6&coov+o1lk$!p9=x^92*0r*#rxgu7n=u5yr3(77j'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+'pi1', 
+'pi2', 
+'hackathon1',
+'hackathon2',
+'172.16.164.138', 
+'172.16.164.139']
 
 
 # Application definition
@@ -55,7 +61,7 @@ ROOT_URLCONF = 'generic.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -119,3 +125,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'site_static')
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+#    os.path.join(BASE_DIR, 'ajaxauth/static'),
+)
+
