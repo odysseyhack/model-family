@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -37,6 +36,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'hackathon',
     'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -131,3 +131,43 @@ STATICFILES_DIRS = (
 #    os.path.join(BASE_DIR, 'ajaxauth/static'),
 )
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+            'require_debug_false': {
+                '()': 'django.utils.log.RequireDebugFalse',
+            },
+        },
+    'formatters': {
+        'default': {
+            'format': '%(asctime)s %(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            #'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'generic.logging.TimedRotatingFileHandler',
+            'filename': BASE_DIR+'/logs/hackathon.log',
+            'when': 'midnight',
+            'backupCount': 30,
+            'formatter': 'default'
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'hackathon': {
+            'handlers': ['file'],
+            'level': 'INFO',
+        },
+    },
+}
+os.environ['HTTPS'] = "on"
