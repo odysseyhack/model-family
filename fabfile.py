@@ -30,7 +30,52 @@ def deploy(server='pi1', branch=None):
     setup(server, branch)
     print('deploying %(branch)s to %(sitename)s' % env)
 
-    # git
+    checkout_git_project()
+    install_virtualenv_requirements()
+    setup_loggin_directories()
+    setup_django()
+    restart_django()
+
+
+def restart_django():
+    run("""
+        touch %(projectdir)s/generic/wsgi.py
+        """ % env)
+
+
+def setup_django():
+    run("""
+        cd %(projectdir)s
+        . %(virtualenv)s/bin/activate
+        python manage.py collectstatic --noinput
+        python manage.py migrate
+        """ % env)
+
+
+def setup_loggin_directories():
+    run("""
+        cd %(projectdir)s
+        if [ ! -d logs ]
+        then
+            mkdir logs
+            chmod 0777 logs
+        fi
+        """ % env)
+
+
+def install_virtualenv_requirements():
+    run("""
+        if [ ! -d %(virtualenv)s ]
+        then
+            virtualenv --python=/usr/bin/python3 %(virtualenv)s
+        fi
+        cd %(projectdir)s
+        . %(virtualenv)s/bin/activate
+        pip install -r %(requirements)s
+        """ % env)
+
+
+def checkout_git_project():
     run("""
         if [ -d %(projectdir)s ]
         then
@@ -43,39 +88,4 @@ def deploy(server='pi1', branch=None):
                     %(source)s %(projectdir)s
             cd %(projectdir)s
         fi
-        """ % env)
-
-    # virtualenv and requirements
-    run("""
-        if [ ! -d %(virtualenv)s ]
-        then
-            virtualenv --python=/usr/bin/python3 %(virtualenv)s
-        fi
-        cd %(projectdir)s
-        . %(virtualenv)s/bin/activate
-        pip install -r %(requirements)s
-        """ % env)
-
-
-    # log dir
-    run("""
-        cd %(projectdir)s
-        if [ ! -d logs ]
-        then
-            mkdir logs
-            chmod 0777 logs
-        fi
-        """ % env)
-
-    # django setup
-    run("""
-        cd %(projectdir)s
-        . %(virtualenv)s/bin/activate
-        python manage.py collectstatic --noinput
-        python manage.py migrate
-        """ % env)
-
-    # django restart
-    run("""
-        touch %(projectdir)s/generic/wsgi.py
         """ % env)
