@@ -2,8 +2,6 @@ from django.utils.translation import ugettext as _
 from django.core.cache import cache
 from hashlib import sha1
 
-from enrollment.settings import env
-
 import requests
 import json
 
