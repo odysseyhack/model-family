@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% load i18n %}
+
+{% block content %}
+
+    <h4>{% trans 'Resend an activation code' %}</h4>
+
+    <form method="post">
+
+        {% csrf_token %}
+        { { form.as_p }}
+
+        <button class="btn btn-primary">{% trans 'Next' %}</button>
+
+    </form>
+
+    <hr>
+
+    <ul>
+        <li>
+            <a href="{% url 'log_in' %}">{% trans 'Log in' %}</a>
+        </li>
+    </ul>
+
+{% endblock %}
