@@ -343,5 +343,17 @@ class RestorePasswordDoneView(BasePasswordResetDoneView):
 	template_name = 'accounts/restore_password_done.html'
 
 
+<<<<<<< HEAD
 class LogOutView(LoginRequiredMixin, BaseLogoutView):
 	template_name = 'accounts/log_out.html'
+=======
+# Create your views here.
+# als je kennis hebt van squid dan kun je de hele ocean stack gebruiken
+#
+# github/oceanprocttocal/secret-store-pi
+#
+# tuna is testsuite van ocean, hiermee kun je testen
+#
+# ---------------
+# Data creator bepaald welke mensen met welke rollen data mogen inzien.
+>>>>>>> ed2f10bf134746e48524eeae3bc5fe9d87b2deca
