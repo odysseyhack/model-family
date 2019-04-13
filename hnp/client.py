@@ -28,13 +28,13 @@ def _update_keys(dictionary):
 
 class ApiRequestException(Exception):
     def __init__(self, status_code):
-        message = "{0} gave http status: {1}".format(env('NIKI_API_URL'), status_code)
+        message = "{0} gave http status: {1}".format(settings.HNP_OAUTH_URL, status_code)
         super().__init__(message)
 
 
 class CreateApiRequest(object):
     def __init__(self, token):
-        self.api_url = env('NIKI_API_URL')
+        self.api_url = settings.HNP_OAUTH_URL
         self.token = token
 
     def get(self, resource='', *args, **kwargs):

@@ -8,7 +8,7 @@ from oauthlib.oauth1 import rfc5849
 from requests_oauthlib import OAuth1Session
 
 from enrollment.settings import env
-from .models import HNPOAuth
+from hackathon.models import HNPOAuth
 from hnp.client import CreateApiRequest, ApiRequestException
 
 
@@ -67,8 +67,8 @@ class AccessTokenView(View):
         self.oauth = ''
 
     def get(self, request, pk):
-        niki_oauth = NikiOAuth.objects.get(pk=self.kwargs['pk'])
-        self.client_key = niki_oauth.client_name
+        hnp_oauth = HNPOAuth.objects.get(pk=self.kwargs['pk'])
+        self.client_key = hnp_oauth.client_name
         self.client_secret = 'IMPLEMENT_SECRET'
 
         self.oauth = OAuth1Session(self.client_key, client_secret=self.client_secret,
@@ -76,7 +76,7 @@ class AccessTokenView(View):
                                    resource_owner_key=request.session.get('resource_owner_key', ''),
                                    resource_owner_secret=request.session.get('resource_owner_secret', ''))
 
-        access_token_url = self.oauth.authorization_url(url=env('NIKI_OAUTH_URL') + "/accessToken", request_token=request.GET['oauth_token'])
+        access_token_url = self.oauth.authorization_url(url=settings.HNP_OAUTH_URL + "/accessToken", request_token=request.GET['oauth_token'])
         redirect_response = reverse('access_token',
                                     kwargs={'pk': pk}) + "?oauth_token={0}&oauth_verifier={1}".\
             format(request.GET['oauth_token'], request.GET['oauth_verifier'])
@@ -86,8 +86,8 @@ class AccessTokenView(View):
         self.oauth.parse_authorization_response(full_url)
         access_token = self.oauth.fetch_access_token(access_token_url)
 
-        niki_oauth.token = access_token.get('oauth_token', '')
-        niki_oauth.save()
+        hnp_oauth.token = access_token.get('oauth_token', '')
+        hnp_oauth.save()
 
         return HttpResponseRedirect(redirect_to=request.session['referrer'])
 
@@ -99,7 +99,7 @@ class AddressGetView(View):
         hnp_id = request.GET.get('niki_id')
         zipcode = request.GET.get('zip')
         number = request.GET.get('nr')
-        token = NikiOAuth.objects.get(pk=hnp_token_id).token
+        token = HNPOAuth.objects.get(pk=hnp_token_id).token
         cap = CreateApiRequest(token=token)
         try:
             response = cap.get("/direct/project/{0}/interest?zipcode={1}&number={2}".format(hnp_id, zipcode, number))
