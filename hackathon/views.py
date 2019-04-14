@@ -35,14 +35,27 @@ from .forms import (SignInViaUsernameForm,
 	ChangeProfileForm, 
 	ChangeEmailForm,)
 from hackathon.models import Activation
+from django.views.generic.edit import CreateView
+from hackathon.models import Building
 
 from django.shortcuts import render
 from oauth2_provider.views.generic import ProtectedResourceView
 from django.http import HttpResponse
 
-class ApiEndpoint(ProtectedResourceView):
+
+
+class BuildingCreateView(CreateView):
+	template_name = 'building_form.html'
+	model = Building
+	fields = ['bag_number', 'building_year', 'developer']
+
+
+class ApiEndpointCreateBuilding(ProtectedResourceView):
 	def get(self, request, *args, **kwargs):
-		return HttpResponse('Hello, OAuth2!')
+		return HttpResponse('This is a POST method')
+
+	def post(self, request, *args, **kwargs):
+		import pdb;pdb.set_trace()
 
 
 # USER VIEWS (authentication and registering)

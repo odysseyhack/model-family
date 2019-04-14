@@ -4,9 +4,10 @@
 
 {% block content %}
 
-    <h4>{% trans 'Hallo' %}</h4>
+    <h4>{% trans 'That worked!' %}</h4>
+    {%debug%}
     <hr>
- <a href="{% url 'create_building' %}">{% trans 'Add your house' %}</a>
+
     <ul>
         <li>
             <a href="{% url 'restore_password' %}">{% trans 'Forgot your password?' %}</a>

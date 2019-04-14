@@ -13,7 +13,7 @@ class Building(models.Model):
     bag_number = models.CharField(max_length=16)
     building_year = models.IntegerField()
     developer = models.CharField(max_length=256)
-    total_score = models.DecimalField(max_digits=10, decimal_places=2)
+    total_score = models.DecimalField(max_digits=10, decimal_places=2, null=True)
 
 
 class PropertyGroup(models.Model):

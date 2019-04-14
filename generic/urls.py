@@ -18,8 +18,7 @@ from django.urls import path, include
 import oauth2_provider.views as oauth2_views
 from django.conf import settings
 from django.views.generic import TemplateView
-from hackathon.views import ApiEndpoint, LogInView, ResendActivationCodeView, RemindUsernameView, SignUpView, ActivateView, LogOutView, ChangeEmailView, ChangeEmailActivateView, ChangeProfileView, ChangePasswordView, RestorePasswordView, RestorePasswordDoneView, RestorePasswordConfirmView
-admin.autodiscover()
+from hackathon.views import ApiEndpointCreateBuilding, LogInView, ResendActivationCodeView, RemindUsernameView, SignUpView, ActivateView, LogOutView, ChangeEmailView, ChangeEmailActivateView, ChangeProfileView, ChangePasswordView, RestorePasswordView, RestorePasswordDoneView, RestorePasswordConfirmView, BuildingCreateView
 # OAuth2 provider endpoints
 oauth2_endpoint_views = [
 	path('authorize/', oauth2_views.AuthorizationView.as_view(), name="authorize"),
@@ -44,12 +43,14 @@ if settings.DEBUG:
 			name="authorized-token-delete"),
 	]
 
-urlpatterns = [path('api-auth/', include('rest_framework.urls')),
-	path('home/', TemplateView.as_view(template_name="home.html"), name='home'),
-
+urlpatterns = [
+	path('api-auth/', include('rest_framework.urls')),
 	path('admin/', admin.site.urls),
 	path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-	path('api/hello', ApiEndpoint.as_view()),
+	path('api/building', ApiEndpointCreateBuilding.as_view()),
+
+	path('create/building', BuildingCreateView.as_view(success_url="/success/"), name='create_building'),
+	
 	
 	path('log-in/', LogInView.as_view(), name='log_in'),
 	path('log-out/', LogOutView.as_view(), name='log_out'),
@@ -69,4 +70,8 @@ urlpatterns = [path('api-auth/', include('rest_framework.urls')),
 	path('change/password/', ChangePasswordView.as_view(), name='change_password'),
 	path('change/email/', ChangeEmailView.as_view(), name='change_email'),
 	path('change/email/<code>/', ChangeEmailActivateView.as_view(), name='change_email_activation'),
+
+	path('success/', TemplateView.as_view(template_name="success.html"), name='success'),
+	path('', TemplateView.as_view(template_name="home.html"), name='home'),
+
 ]
