@@ -25,37 +25,42 @@ class RequestTokenView(View):
 
     def get(self, request, pk):
         request.session['referrer'] = request.META.get('HTTP_REFERER')
-        hnp_oauth = HNPOAuth.objects.get(pk=pk)
-        self.client_key = hnp_oauth.client_name
-        self.client_secret = 'IMPLEMENT_SECRET'
-
-        self.oauth = OAuth1Session(self.client_key, client_secret=self.client_secret,
-                                   signature_method=rfc5849.SIGNATURE_PLAINTEXT,
-                                   callback_uri=HttpRequest.build_absolute_uri(request, reverse('access_token', kwargs={'pk': pk})))
-
-        fetch_response = self.oauth.fetch_request_token(settings.HNP_OAUTH_URL + "/requestToken")
-
-        self.resource_owner_key = fetch_response.get('oauth_token')
-        self.resource_owner_secret = fetch_response.get('oauth_token_secret')
+        hnp_oauth = self.manage_oauth(pk, request)
         request.session['resource_owner_key'] = self.resource_owner_key
         request.session['resource_owner_secret'] = self.resource_owner_secret
 
+        self.create_url(hnp_oauth)
+        authorization_url = self.oauth.authorization_url(url=settings.HNP_OAUTH_URL  + "/authorization")
+
+        return HttpResponseRedirect(redirect_to=authorization_url)
+
+    def create_url(self, hnp_oauth):
         url = "{base_url}/accessToken?oauth_consumer_key={consumer}&" + \
-            "oauth_signature_method={sig_method}&" + \
-            "oauth_signature={sig}&" + \
-            "oauth_timestamp={timestamp}&" + \
-            "oauth_nonce={nonce}&" + \
-            "oauth_verifier={verifier}"
-        url = url.format(base_url=settings.HNP_OAUTH_URL ,
+              "oauth_signature_method={sig_method}&" + \
+              "oauth_signature={sig}&" + \
+              "oauth_timestamp={timestamp}&" + \
+              "oauth_nonce={nonce}&" + \
+              "oauth_verifier={verifier}"
+        url = url.format(base_url=settings.HNP_OAUTH_URL,
                          consumer=hnp_oauth.client_name,
                          sig_method=rfc5849.SIGNATURE_PLAINTEXT,
                          sig=self.client_secret + "%26",
                          timestamp=int(time()),
-                         nonce=int(time()*1.5),
+                         nonce=int(time() * 1.5),
                          verifier='ver')
-        authorization_url = self.oauth.authorization_url(url=settings.HNP_OAUTH_URL  + "/authorization")
 
-        return HttpResponseRedirect(redirect_to=authorization_url)
+    def manage_oauth(self, pk, request):
+        hnp_oauth = HNPOAuth.objects.get(pk=pk)
+        self.client_key = hnp_oauth.client_name
+        self.client_secret = 'IMPLEMENT_SECRET'
+        self.oauth = OAuth1Session(self.client_key, client_secret=self.client_secret,
+                                   signature_method=rfc5849.SIGNATURE_PLAINTEXT,
+                                   callback_uri=HttpRequest.build_absolute_uri(request, reverse('access_token',
+                                                                                                kwargs={'pk': pk})))
+        fetch_response = self.oauth.fetch_request_token(settings.HNP_OAUTH_URL + "/requestToken")
+        self.resource_owner_key = fetch_response.get('oauth_token')
+        self.resource_owner_secret = fetch_response.get('oauth_token_secret')
+        return hnp_oauth
 
 
 class AccessTokenView(View):
@@ -102,14 +107,17 @@ class AddressGetView(View):
         token = HNPOAuth.objects.get(pk=hnp_token_id).token
         cap = CreateApiRequest(token=token)
         try:
-            response = cap.get("/direct/project/{0}/interest?zipcode={1}&number={2}".format(hnp_id, zipcode, number))
-            return HttpResponse(json.dumps(
-                {'success': {
-                    'street': response.get('subscriber').get('street'),
-                    'city': response.get('subscriber').get('city'),
-                    'country': response.get('subscriber').get('country')
-                }}), content_type="application/json")
+            return self.create_response_dictionary(cap, hnp_id, number, zipcode)
         except ApiRequestException as are:
             return HttpResponse(
                 {'error': are},
                 content_type="application/json")
+
+    def create_response_dictionary(self, cap, hnp_id, number, zipcode):
+        response = cap.get("/direct/project/{0}/interest?zipcode={1}&number={2}".format(hnp_id, zipcode, number))
+        return HttpResponse(json.dumps(
+            {'success': {
+                'street': response.get('subscriber').get('street'),
+                'city': response.get('subscriber').get('city'),
+                'country': response.get('subscriber').get('country')
+            }}), content_type="application/json")
