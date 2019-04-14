@@ -20,6 +20,7 @@ from django.conf import settings
 from django.views.generic import TemplateView
 from hackathon.views import ApiEndpoint, LogInView, ResendActivationCodeView, RemindUsernameView, SignUpView, ActivateView, LogOutView, ChangeEmailView, ChangeEmailActivateView, ChangeProfileView, ChangePasswordView, RestorePasswordView, RestorePasswordDoneView, RestorePasswordConfirmView
 admin.autodiscover()
+
 # OAuth2 provider endpoints
 oauth2_endpoint_views = [
 	path('authorize/', oauth2_views.AuthorizationView.as_view(), name="authorize"),
@@ -27,46 +28,58 @@ oauth2_endpoint_views = [
 	path('revoke-token/', oauth2_views.RevokeTokenView.as_view(), name="revoke-token"),
 ]
 
-if settings.DEBUG:
+
+# Add oauth2 endpoint views for application management and token management
+def set_oauth2_endpoint_views(oauth2_endpoint_views):
 	# OAuth2 Application Management endpoints
 	oauth2_endpoint_views += [
-		 path('applications/', oauth2_views.ApplicationList.as_view(), name="list"),
-		 path('applications/register/', oauth2_views.ApplicationRegistration.as_view(), name="register"),
-		 path('applications/<int:pk>/', oauth2_views.ApplicationDetail.as_view(), name="detail"),
-		 path('applications/<int:pk>/delete/', oauth2_views.ApplicationDelete.as_view(), name="delete"),
+		path('applications/', oauth2_views.ApplicationList.as_view(), name="list"),
+		path('applications/register/', oauth2_views.ApplicationRegistration.as_view(), name="register"),
+		path('applications/<int:pk>/', oauth2_views.ApplicationDetail.as_view(), name="detail"),
+		path('applications/<int:pk>/delete/', oauth2_views.ApplicationDelete.as_view(), name="delete"),
 		path('applications/<int:pk>/update/', oauth2_views.ApplicationUpdate.as_view(), name="update"),
 	]
 
 	# OAuth2 Token Management endpoints
 	oauth2_endpoint_views += [
-	   path('authorized-tokens/$', oauth2_views.AuthorizedTokensListView.as_view(), name="authorized-token-list"),
-	   path('authorized-tokens/(?P<pk>\d+)/delete/$', oauth2_views.AuthorizedTokenDeleteView.as_view(),
-			name="authorized-token-delete"),
+		path('authorized-tokens/$', oauth2_views.AuthorizedTokensListView.as_view(), name="authorized-token-list"),
+		path('authorized-tokens/(?P<pk>\d+)/delete/$', oauth2_views.AuthorizedTokenDeleteView.as_view(),
+			 name="authorized-token-delete"),
 	]
 
-urlpatterns = [path('api-auth/', include('rest_framework.urls')),
-	path('home/', TemplateView.as_view(template_name="home.html"), name='home'),
 
-	path('admin/', admin.site.urls),
-	path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-	path('api/hello', ApiEndpoint.as_view()),
-	
-	path('log-in/', LogInView.as_view(), name='log_in'),
-	path('log-out/', LogOutView.as_view(), name='log_out'),
+if settings.DEBUG:
+	set_oauth2_endpoint_views(oauth2_endpoint_views)
 
-	path('resend/activation-code/', ResendActivationCodeView.as_view(), name='resend_activation_code'),
 
-	path('sign-up/', SignUpView.as_view(), name='sign_up'),
-	path('activate/<code>/', ActivateView.as_view(), name='activate'),
+def get_url_patterns():
+	return [
+		path('api-auth/', include('rest_framework.urls')),
+		path('home/', TemplateView.as_view(template_name="home.html"), name='home'),
 
-	path('restore/password/', RestorePasswordView.as_view(), name='restore_password'),
-	path('restore/password/done/', RestorePasswordDoneView.as_view(), name='restore_password_done'),
-	path('restore/<uidb64>/<token>/', RestorePasswordConfirmView.as_view(), name='restore_password_confirm'),
+		path('admin/', admin.site.urls),
+		path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+		path('api/hello', ApiEndpoint.as_view()),
 
-	path('remind/username/', RemindUsernameView.as_view(), name='remind_username'),
+		path('log-in/', LogInView.as_view(), name='log_in'),
+		path('log-out/', LogOutView.as_view(), name='log_out'),
 
-	path('change/profile/', ChangeProfileView.as_view(), name='change_profile'),
-	path('change/password/', ChangePasswordView.as_view(), name='change_password'),
-	path('change/email/', ChangeEmailView.as_view(), name='change_email'),
-	path('change/email/<code>/', ChangeEmailActivateView.as_view(), name='change_email_activation'),
-]
+		path('resend/activation-code/', ResendActivationCodeView.as_view(), name='resend_activation_code'),
+
+		path('sign-up/', SignUpView.as_view(), name='sign_up'),
+		path('activate/<code>/', ActivateView.as_view(), name='activate'),
+
+		path('restore/password/', RestorePasswordView.as_view(), name='restore_password'),
+		path('restore/password/done/', RestorePasswordDoneView.as_view(), name='restore_password_done'),
+		path('restore/<uidb64>/<token>/', RestorePasswordConfirmView.as_view(), name='restore_password_confirm'),
+
+		path('remind/username/', RemindUsernameView.as_view(), name='remind_username'),
+
+		path('change/profile/', ChangeProfileView.as_view(), name='change_profile'),
+		path('change/password/', ChangePasswordView.as_view(), name='change_password'),
+		path('change/email/', ChangeEmailView.as_view(), name='change_email'),
+		path('change/email/<code>/', ChangeEmailActivateView.as_view(), name='change_email_activation'),
+	]
+
+
+urlpatterns = get_url_patterns()
