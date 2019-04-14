@@ -4,15 +4,18 @@
 
 {% block content %}
 
-    <h4>{% trans 'Create an account' %}</h4>
+<div class="form-container">
+	<div class="tabs">
+	    <h4 class="login-tab"><a href="{% url 'log_in' %}">{% trans 'Log in' %}</a></h4><h4>{% trans 'Register' %}</h4>
+	</div>
+	<div class="register-form">
+	    <form method="post">
 
-    <form method="post">
+	        {% csrf_token %}
+	        {{ form.as_p }}
 
-        {% csrf_token %}
-        {{ form.as_p }}
+	        <button class="btn btn-success">{% trans 'Register' %}</button>
 
-        <button class="btn btn-success">{% trans 'Create' %}</button>
-
-    </form>
-
+	    </form>
+</div>
 {% endblock %}

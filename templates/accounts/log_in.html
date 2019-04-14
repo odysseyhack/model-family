@@ -4,29 +4,34 @@
 
 {% block content %}
 
-    <h4>{% trans 'Log in' %}</h4>
+<div class="form-container">
+    <div class="tabs">
+        <h4>{% trans 'Log in' %}</h4><h4 class="register-tab"><a href="{% url 'sign_up' %}">{% trans 'Register' %}</a></h4>
+    </div>
+    <div class="login-form">
+        <form method="post">
 
-    <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
 
-        {% csrf_token %}
-        {{ form.as_p }}
+            <button class="btn btn-primary">{% trans 'Log in' %}</button>
 
-        <button class="btn btn-primary">{% trans 'Log in' %}</button>
+        </form>
 
-    </form>
-
-    <hr>
-
-    <ul>
-        <li>
-            <a href="{% url 'restore_password' %}">{% trans 'Forgot your password?' %}</a>
-        </li>
-        <li>
-            <a href="{% url 'remind_username' %}">{% trans 'Forgot your username?' %}</a>
-        </li>
-        <li>
-            <a href="{% url 'resend_activation_code' %}">{% trans 'Resend an activation code' %}</a>
-        </li>
-    </ul>
+        <div class="account-options">
+            <ul>
+                <li>
+                    <a href="{% url 'restore_password' %}">{% trans 'Forgot your password?' %}</a>
+                </li>
+                <li>
+                    <a href="{% url 'remind_username' %}">{% trans 'Forgot your username?' %}</a>
+                </li>
+                <li>
+                    <a href="{% url 'resend_activation_code' %}">{% trans 'Resend an activation code' %}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
