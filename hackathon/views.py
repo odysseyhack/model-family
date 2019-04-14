@@ -50,9 +50,6 @@ class BuildingCreateView(CreateView):
 
 class ApiEndpointCreateBuilding(ProtectedResourceView):
 	def get(self, request, *args, **kwargs):
-		return HttpResponse('This is a POST method')
-
-	def post(self, request, *args, **kwargs):
 		pass
 
 
