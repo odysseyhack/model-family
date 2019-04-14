@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load i18n %}
+
+{% block content %}
+
+    <h4>{% trans 'That worked!' %}</h4>
+    {%debug%}
+    <hr>
+
+    <ul>
+        <li>
+            <a href="{% url 'restore_password' %}">{% trans 'Forgot your password?' %}</a>
+        </li>
+        <li>
+            <a href="{% url 'remind_username' %}">{% trans 'Forgot your username?' %}</a>
+        </li>
+        <li>
+            <a href="{% url 'resend_activation_code' %}">{% trans 'Resend an activation code' %}</a>
+        </li>
+    </ul>
+
+{% endblock %}

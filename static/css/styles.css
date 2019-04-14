@@ -1,0 +1,144 @@
+body {
+	line-height: 1.4em;
+	font-family: 'Lato', regular;
+	font-weight: 300;
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	background-image: url('../gfx/images/header-image.jpg');
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	
+}
+.container {
+	width: 1200px;
+	margin: 0 auto;
+}
+
+.navbar {
+	background-color: #62A871;
+	padding: 10px 20px;
+}
+
+.container-fluid {
+	min-height: 600px;
+}
+
+.login-block {
+	list-style: none;
+	display: inline;
+}
+
+.account {
+	color: #62A871;
+	font-weight: 600;
+	padding: 10px 20px;
+	text-decoration: none;
+	width: 100px;
+}
+
+.login {
+	background-color: #595959;
+	float: left;
+}
+
+.register {
+	background-color: #494949;
+	float: left;
+}
+
+h4 {
+	background-color: #595959;
+	color: #62A871;
+	float: left;
+	font-weight: 600;
+	margin-bottom: 0px;
+	min-width: 130px;
+	padding: 10px 20px;
+	text-decoration: none;
+	width: 146px;
+}
+
+form {
+	background-color: #595959;
+    padding: 30px 30px 70px;
+    width: 26%;
+}
+
+label {
+	color: #62A871;
+	width: 160px;
+	display: inline-block;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+	border: none;
+    padding: 8px 10px;
+    background-color: #6f6f6f;
+}
+
+form button {
+	background-color: #62A871;
+    width: 100%;
+    padding: 15px;
+    border: none;
+    font-size: 16px;
+    color: white;
+    margin-top: 30px;
+}
+
+.tabs {
+	float: left;
+}
+
+.login-form, .register-form  {
+	position: relative;
+	top: 63px;
+}
+
+.account-options {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+
+.account-options ul {
+	padding-left: 30px;
+}
+.account-options ul li {
+	list-style: none;
+	font-size: 13px;
+	float: left;
+}
+.account-options ul li a {
+	color: #fff;
+}
+
+.account-options ul li:first-child {
+	margin-right: 30px;
+}
+
+.account-options ul li:last-child {
+	float: none;
+}
+
+.login-tab, .register-tab {
+	background-color: #494949;
+	color: #fff;
+	float: left;
+}
+.helptext {
+	font-size: 13px;
+	color: #fff;
+}
+
+.register-form ul li {
+	color: white;
+	font-size: 13px;
+}
+
+
+
