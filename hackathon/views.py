@@ -40,7 +40,8 @@ from hackathon.models import Building
 
 from oauth2_provider.views.generic import ProtectedResourceView
 from django.http import HttpResponse
-
+from iota_client.test_client import anchor_building_block, generate_api, generate_tag, get_anchored_building_blocks, get_anchored_building_blocks_by_group, test_write 
+from iota import Iota
 
 class BuildingCreateView(CreateView):
 	template_name = 'building_form.html'
@@ -49,8 +50,14 @@ class BuildingCreateView(CreateView):
 
 
 class ApiEndpointCreateBuilding(ProtectedResourceView):
-	def get(self, request, *args, **kwargs):
-		pass
+	def get(self, request, bag_code, building_year, developer, args, **kwargs):
+		api = generate_api()
+		address = api.get_new_addresses()['addresses'][0]
+		tag = generate_tag(1, 'lifecycle')
+		result = anchor_building_block(api, address, tag, 'created')
+		
+		return HttpResponse('Data received'.format(result))
+
 
 
 # USER VIEWS (authentication and registering)
@@ -272,7 +279,17 @@ class ChangeEmailView(LoginRequiredMixin, FormView):
         email = form.cleaned_data['email']
 
         if settings.ENABLE_ACTIVATION_AFTER_EMAIL_CHANGE:
-            self.enable_activation(email, user)
+            code = get_random_string(20)
+
+            act = Activation()
+            act.code = code
+            act.user = user
+            act.email = email
+            act.save()
+
+            send_activation_change_email(self.request, email, code)
+
+            messages.success(self.request, _('To complete the change of email address, click on the link sent to it.'))
         else:
             user.email = email
             user.save()
@@ -280,16 +297,6 @@ class ChangeEmailView(LoginRequiredMixin, FormView):
             messages.success(self.request, _('Email successfully changed.'))
 
         return redirect('change_email')
-
-    def enable_activation(self, email, user):
-        code = get_random_string(20)
-        act = Activation()
-        act.code = code
-        act.user = user
-        act.email = email
-        act.save()
-        send_activation_change_email(self.request, email, code)
-        messages.success(self.request, _('To complete the change of email address, click on the link sent to it.'))
 
 
 class ChangeEmailActivateView(View):
