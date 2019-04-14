@@ -53,6 +53,7 @@ def get_url_patterns():
 	path('api-auth/', include('rest_framework.urls')),
 	path('home/', TemplateView.as_view(template_name="home.html"), name='home'),
 	path('create/building/', BuildingCreateView.as_view(), name='create_building'),
+	path('api/create/building/', ApiEndpointCreateBuilding.as_view(), name='create_api_building'),
 
 	path('admin/', admin.site.urls),
 	path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
