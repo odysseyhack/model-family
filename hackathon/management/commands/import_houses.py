@@ -26,14 +26,15 @@ class Command(BaseCommand):
 					appartment = KADASTER_MAPPING.get('appartment')
 					farm =  KADASTER_MAPPING.get('farm')
 					score_list = []
-					for column in data:
-						building_type = column[14]
-						self.process_building_type(appartment, building_type, column, farm, house, score_list)
+					self.process_columns(appartment, data, farm, house, score_list)
 					self.print_and_sort(score_list)
-
-
 				except:
 					pass
+
+		def process_columns(self, appartment, data, farm, house, score_list):
+			for column in data:
+				building_type = column[14]
+				self.process_building_type(appartment, building_type, column, farm, house, score_list)
 
 		def print_and_sort(self, score_list):
 			print(sum(score_list) / len(score_list))
