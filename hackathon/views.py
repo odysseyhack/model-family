@@ -272,17 +272,7 @@ class ChangeEmailView(LoginRequiredMixin, FormView):
         email = form.cleaned_data['email']
 
         if settings.ENABLE_ACTIVATION_AFTER_EMAIL_CHANGE:
-            code = get_random_string(20)
-
-            act = Activation()
-            act.code = code
-            act.user = user
-            act.email = email
-            act.save()
-
-            send_activation_change_email(self.request, email, code)
-
-            messages.success(self.request, _('To complete the change of email address, click on the link sent to it.'))
+            self.enable_activation(email, user)
         else:
             user.email = email
             user.save()
@@ -290,6 +280,16 @@ class ChangeEmailView(LoginRequiredMixin, FormView):
             messages.success(self.request, _('Email successfully changed.'))
 
         return redirect('change_email')
+
+    def enable_activation(self, email, user):
+        code = get_random_string(20)
+        act = Activation()
+        act.code = code
+        act.user = user
+        act.email = email
+        act.save()
+        send_activation_change_email(self.request, email, code)
+        messages.success(self.request, _('To complete the change of email address, click on the link sent to it.'))
 
 
 class ChangeEmailActivateView(View):

@@ -10,10 +10,21 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 import os
+from generic import allowed_hosts_settings
+from generic import auth_password_validators
+from generic import installed_apps_settings
+from generic import logging_settings
+from generic import middleware_settings
+from generic import templates_settings
 
+LOGGING = logging_settings.LOGGING
+TEMPLATES = templates_settings.TEMPLATES
+MIDDLEWARE = middleware_settings.MIDDLEWARE
+AUTH_PASSWORD_VALIDATORS = auth_password_validators.AUTH_PASSWORD_VALIDATORS
+ALLOWED_HOSTS = allowed_hosts_settings.ALLOWED_HOSTS
+INSTALLED_APPS = installed_apps_settings.INSTALLED_APPS
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -24,43 +35,9 @@ SECRET_KEY = '98fim!5fs6&coov+o1lk$!p9=x^92*0r*#rxgu7n=u5yr3(77j'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-'localhost',
-'pi1', 
-'pi2', 
-'hackathon1',
-'hackathon2',
-'172.16.164.138', 
-'172.16.164.139']
-
 
 # Application definition
 
-INSTALLED_APPS = [
-    'rest_framework',
-    'hackathon',
-    'django_extensions',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'oauth2_provider',
-    'corsheaders'
-]
-
-MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    'oauth2_provider.middleware.OAuth2TokenMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -76,22 +53,6 @@ AUTHENTICATION_BACKENDS = (
 )
 
 ROOT_URLCONF = 'generic.urls'
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
 
 WSGI_APPLICATION = 'generic.wsgi.application'
 
@@ -109,21 +70,6 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
 
 
 # Internationalization
@@ -165,43 +111,4 @@ SIGN_UP_FIELDS = ['username', 'first_name', 'last_name', 'email', 'password1', '
 if DISABLE_USERNAME:
     SIGN_UP_FIELDS = ['first_name', 'last_name', 'email', 'password1', 'password2']
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-            'require_debug_false': {
-                '()': 'django.utils.log.RequireDebugFalse',
-            },
-        },
-    'formatters': {
-        'default': {
-            'format': '%(asctime)s %(levelname)s %(message)s'
-        },
-    },
-    'handlers': {
-        'console': {
-            #'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-        },
-        'file': {
-            'level': 'INFO',
-            'class': 'generic.logging.TimedRotatingFileHandler',
-            'filename': BASE_DIR+'/logs/hackathon.log',
-            'when': 'midnight',
-            'backupCount': 30,
-            'formatter': 'default'
-        },
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        'hackathon': {
-            'handlers': ['file'],
-            'level': 'INFO',
-        },
-    },
-}
 os.environ['HTTPS'] = "on"
