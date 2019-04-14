@@ -4,6 +4,8 @@
 
 {% block content %}
 
+<a href="{% url 'create_building' %}">{% trans 'Add your house' %}</a>
+
     <div class="header-image" id="header-block">
         <ul class="login-block mr-auto">
             {% if request.user.is_authenticated %}
